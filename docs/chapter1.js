@@ -76,8 +76,7 @@ export const CHAPTER = {
     },
     {
       id: 'ALLC', endpoint: 'dbpedia', title: 'Find all curries', concept: 'Expanded query',
-      body: `<p>Now, we are interested in other types of curry.</p>
-        <p>We can do that by using the predicate and object, searching for subjects, which we call <code>?s</code> (notice, this is just a somewhat useful variable name, we could have called it anything, <code>?q</code>, <code>?whoever</code>, or <code>?qwerty</code>; as long as it starts with a question mark to indicate it is an unbound variable).</p>
+      body: `<p>We can look into other types of curry by using the predicate and object, searching for subjects, which we call <code>?s</code> (notice, this is just a somewhat useful variable name, we could have called it anything, <code>?q</code>, <code>?whoever</code>, or <code>?qwerty</code>; as long as it starts with a question mark to indicate it is an unbound variable).</p>
         <p>This query shows some new elements. First, every triple is a sentence that explicitly ends by using a period, “.”. We can also interpret this period as an “AND”. We search subjects (<code>?s</code>) of type curry, AND we want to know their country (<code>?country</code>).</p>
         <p><b>Answer Question set 2</b> (Questions 4 - 6 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
       noSubmit: true,
