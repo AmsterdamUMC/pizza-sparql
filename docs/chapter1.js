@@ -59,18 +59,27 @@ export const CHAPTER = {
   tasks: [
     {
       id: 'GREN', endpoint: 'dbpedia', title: 'Everything about green curry', concept: 'Triple patterns',
-      story: `<p>DBpedia is a crowd-sourced effort to extract structured information from Wikipedia and publish it as linked data. Every fact is a <b>triple</b>: subject, predicate, object. In <i>Semantics for Dummies</i> (p. 39) a query asks for all predicates and objects of one subject. We do the same for Thai green curry.</p>`,
-      lesson: `<p>In <code>?p ?o</code> the question marks make <i>variables</i>. The subject is fixed: the DBpedia resource for green curry. The endpoint returns every predicate–object pair it has for that subject.</p>
-        <p>Among the results is this line:</p>${pre('http://www.w3.org/1999/02/22-rdf-syntax-ns#type   http://dbpedia.org/ontology/Food')}
-        <p>It means: green curry <i>is a</i> (has type) Food. All predicates and most objects are links; click a few. An object that is not a link is a <b>literal</b>: a piece of text or a number.</p>`,
-      task: `<p><b>Run the query in the editor</b> (▶ Run), look through the results, then press <b>Submit answer</b>.</p>`,
+      // `body` replaces the Background / Concept / Problem / Return sections; `after` follows the results.
+      body: `<p>In the book “Semantics for Dummies”, we find a SPARQL-query on page 39, which is run on a small “graph” and we do this type of query for Thai green curry:</p>
+        <p>Now, let’s run this query in real life.</p>`,
+      noSubmit: true,
+      after: `<p>This returns all the predicates and objects for the subject Green curry.</p>
+        <p>Among this, we see this line:</p>${pre('http://www.w3.org/1999/02/22-rdf-syntax-ns#type   http://dbpedia.org/ontology/Food')}
+        <p>This means: Green curry is a (in other words: “has type”) food.</p>
+        <p>Notice that all of the predicates and most of the objects are links. Click on them to see that these actually link to a page with more info. When an object is not a link, it is a so-called literal, a piece of text, or some numeric value. More about these follows shortly.</p>
+        <p><b>Answer Question set 1</b> (Questions 1 - 3 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
       returns: ['p', 'o'], check: ['p', 'o'],
       starter: Q.green, solution: Q.green,
       explain: 'You asked for every triple whose subject is dbr:Green_curry. Notice how many different predicates describe one dish, and that some objects are links while others are text.',
       refs: ['rdf11', 'dbpedia'],
     },
     {
-      id: 'ALLC', endpoint: 'dbpedia', title: 'Find all curries', concept: 'Variables in subject position',
+      id: 'ALLC', endpoint: 'dbpedia', title: 'Find all curries', concept: 'Expanded query',
+      body: `<p>Now, we are interested in other types of curry.</p>
+        <p>We can do that by using the predicate and object, searching for subjects, which we call <code>?s</code> (notice, this is just a somewhat useful variable name, we could have called it anything, <code>?q</code>, <code>?whoever</code>, or <code>?qwerty</code>; as long as it starts with a question mark to indicate it is an unbound variable).</p>
+        <p>This query shows some new elements. First, every triple is a sentence that explicitly ends by using a period, “.”. We can also interpret this period as an “AND”. We search subjects (<code>?s</code>) of type curry, AND we want to know their country (<code>?country</code>).</p>
+        <p><b>Answer Question set 2</b> (Questions 4 - 6 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
+      noSubmit: true,
       story: `<p>Now we want other curries. We keep the predicate and object fixed and search for subjects, which we call <code>?s</code>. The name is arbitrary (<code>?dish</code>, <code>?qwerty</code>); the question mark makes it an unbound variable.</p>`,
       lesson: `<p>Each triple ends with a period, “.”. Read the period as AND: we want subjects whose type is Curry <b>and</b> that have a country. <code>ORDER BY</code> sorts the results by country.</p>`,
       task: `<p><b>Run the query</b>, look at the results and <b>Submit</b>. Which countries have the most curries? Is green curry among them?</p>`,
@@ -81,6 +90,14 @@ export const CHAPTER = {
     },
     {
       id: 'PREF', endpoint: 'dbpedia', title: 'Prefixes and literals', concept: 'PREFIX, literals',
+      body: `<p>The lengthy names in the query are not ideal, and we may use more of those, so it is nice to have a shorthand.</p>
+        <p>We use <code>PREFIX</code> to create such shorthands for everything up to the last <code>#</code> or <code>/</code> .</p>
+        <p>The name (ending with a colon “:” ) can be anything, but is usually an acronym or abbreviation of the vocabulary, which helps us remind what it’s about. You could as well call them <code>src1:</code> <code>src2:</code> <code>qwerty:</code> if you prefer (but you won’t!).</p>
+        ${pre(DBP + 'select ?s ?countryName\nWHERE {\n  ?s dbo:type dbr:Curry .\n  ?s dbo:country ?country .\n}')}
+        <p>You will see that this query shows exactly the same results as the previous one.</p>
+        <p>Now lets try to get the name of the country as text. Remember, these are literals, i.e., they don’t point to other resources. Modify the query to find all curries with the object literal <code>"Thailand"@en</code>.</p>
+        <p><b>Answer Question set 3</b> (Questions 6 – 7 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
+      noSubmit: true,
       story: `<p>Long IRIs are tiring, so we define shorthands with <code>PREFIX</code>. A prefix covers everything up to the last <code>#</code> or <code>/</code>. Its name, ending in a colon, can be anything, but usually it's a recognisable abbreviation.</p>`,
       lesson: `<p>DBpedia uses two namespaces for predicates. <code>dbo:</code> (<code>http://dbpedia.org/ontology/</code>) holds curated ontology properties. <code>dbp:</code> (<code>http://dbpedia.org/property/</code>) holds raw properties copied straight from Wikipedia infoboxes. Raw properties often give text where you'd expect a link.</p>
         <p>An object can be a literal: text in quotes with a language tag, such as <code>"Thailand"@en</code>. Numbers and dates carry a datatype instead, shown with <code>^^</code>: a year appears as <code>"2016"^^xsd:gYear</code>.</p>`,
@@ -93,12 +110,20 @@ export const CHAPTER = {
       refs: ['sparql11'],
     },
     {
-      id: 'CNTA', q: 23, endpoint: 'wikidata', title: 'Curries per allergy', concept: 'GROUP BY on a join',
+      id: 'CNTA', endpoint: 'wikidata', title: 'Curries per allergy', concept: 'GROUP BY on a join',
+      body: `<p>Now let’s look at a possible application of the curry queries. Lets find curries with possible allergens. Here we will use Wikidata, it is another crowd-sourced knowledge graph. Its items have numeric identifiers and the label service adds English names as <code>?…Label</code>.</p>
+        <p>In the preset query, <code>wd:Q164606</code> is curry, <code>wd:Q769815</code> is food allergy. <code>wdt:P279</code> is “subclass of”, <code>wdt:P186</code> “made from material” (ingredient) and <code>wdt:P828</code> “has cause”. The <code>*</code> in <code>wdt:P279*</code> follows subclass links zero or more times. This query connects the dish to the disease through the ingredient: it lists which curries contain an ingredient that causes a food allergy. Run it first.</p>
+        <p>For an allergist, the question turns around: for each allergy, how many curries are risky? <code>GROUP BY</code> collects rows with the same values, and an aggregate such as <code>(COUNT(DISTINCT ?curry) AS ?n)</code> computes one number per group. Every selected variable that is not an aggregate must be in the <code>GROUP BY</code>.</p>
+        <p><b>Answer Question set 4</b> (Questions 8 - 9 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>
+        <h3>Optional</h3>
+        <p>Chicken is a common curry ingredient and Wikidata has a “poultry allergy”, yet it is missing from your results. Look up “chicken as food” on Wikidata: why does your query miss the link?</p>
+        <p><b>Answer Question set 5</b> (Question 10 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
+      noSubmit: true,
       story: `<p>Wikidata is another crowd-sourced knowledge graph. Its items have numeric identifiers: <code>wd:Q164606</code> is curry, <code>wd:Q769815</code> is food allergy. <code>wdt:P279</code> is “subclass of”, <code>wdt:P186</code> “made from material” (ingredient) and <code>wdt:P828</code> “has cause”. The <code>*</code> in <code>wdt:P279*</code> follows subclass links zero or more times, and the label service adds English names as <code>?…Label</code>.</p>
         <p>The query in the editor connects the dish to the disease through the ingredient: it lists which curries contain an ingredient that causes a food allergy. Run it first.</p>`,
       lesson: `<p>For an allergist, the question turns around: for each allergy, how many curries are risky? <code>GROUP BY</code> collects rows with the same values, and an aggregate such as <code>(COUNT(DISTINCT ?curry) AS ?n)</code> computes one number per group. Every selected variable that is not an aggregate must be in the <code>GROUP BY</code>.</p>`,
       task: `<p>Adapt the query to show, for each allergy, the number of different curries that can trigger it, in descending order.</p>`,
-      hint: 'SELECT ?allergy ?allergyLabel and a COUNT(DISTINCT ?curry) AS ?n; GROUP BY ?allergy ?allergyLabel; ORDER BY DESC(?n).',
+      hint: 'SELECT ?allergy ?allergyLabel and a COUNT(DISTINCT ?curry) AS ?n; GROUP BY ?allergy ?allergyLabel',
       returns: ['allergy', 'allergyLabel', 'n'], check: ['allergy', 'n'],
       starter: Q.curryAllergy, solution: Q.perAllergy,
       // Used only when Wikidata won't answer the reference query (e.g. rate limiting): ?allergy │ ?n

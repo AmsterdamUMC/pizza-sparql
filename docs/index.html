@@ -233,7 +233,7 @@
 <script src="vendor/comunica-browser.js?v=dd19a33e2c"></script>
 <script type="module">
 import { unlock, unlockWithKey, runQuery } from './vendor/engine.js?v=d6519778d4';
-import { CHAPTER, ENDPOINTS, REFS } from './chapter1.js?v=3226fda847';
+import { CHAPTER, ENDPOINTS, REFS } from './chapter1.js?v=62436c2a7c';
 
 const PREFIXES = {
   pizza: 'http://www.co-ode.org/ontologies/pizza/pizza.owl#',
@@ -550,22 +550,23 @@ function renderTask(i) {
     <p class="kicker"><a href="#/ch1">Chapter 1 · ${esc(CHAPTER.title)}</a> › Task ${i + 1} of ${CHAPTER.tasks.length} · ${t.id}</p>
     <h2>${esc(t.title)}${solved.has(t.id) ? ' <span class="done" title="solved">✓</span>' : ''}</h2>
     <p class="meta"><span>Concept: <b>${esc(t.concept)}</b></span><span>Where: <b>${esc(ep.name)}</b></span>${t.q ? `<span>${esc(CHAPTER.quiz.name)}: <b>Question ${t.q}</b></span>` : ''}</p>
-    <h3>Background</h3>${t.story}
+    ${t.body ? t.body : `<h3>Background</h3>${t.story}
     ${t.lesson ? `<h3>The concept</h3>${t.lesson}` : ''}
     <h3>Problem</h3>${t.task}
-    <p class="returns">Return: ${t.returns.map((v) => `<code>?${v}</code>`).join(' ')}${t.check.length < t.returns.length ? ` · checked on ${t.check.map((v) => `<code>?${v}</code>`).join(' ')}` : ''}</p>
+    <p class="returns">Return: ${t.returns.map((v) => `<code>?${v}</code>`).join(' ')}${t.check.length < t.returns.length ? ` · checked on ${t.check.map((v) => `<code>?${v}</code>`).join(' ')}` : ''}</p>`}
     ${t.hint ? `<details class="hint"><summary>Hint</summary><p>${esc(t.hint)}</p></details>` : ''}
     <div class="endpoint"><span>Engine: <b>Comunica</b>, in your browser → endpoint: <b>${esc(ep.name)}</b></span><a href="#" id="openUi" target="_blank" rel="noopener">open in ${esc(ep.name)} ↗</a></div>
     <div class="editor"><textarea id="taskQuery"></textarea></div>
     <div class="bar">
       <button class="primary" id="taskRun" type="button">▶ Run</button>
-      <button id="taskSubmit" type="button">Submit answer</button>
+      <button id="taskSubmit" type="button"${t.noSubmit ? ' hidden' : ''}>Submit answer</button>
       <button id="taskReset" type="button">Reset</button>
       <span class="status" id="taskStatus">⌘/Ctrl + Enter to run</span>
     </div>
     <div id="verdict"></div>
     <div id="explain"></div>
     <div class="results" id="taskResults"><div class="empty">Run the query to see results.</div></div>
+    ${t.after ? `<div class="after">${t.after}</div>` : ''}
     ${t.refs?.length ? `<h3>Further reading</h3><ul class="refs">${t.refs.map((r) => `<li>${cite(r)}</li>`).join('')}</ul>` : ''}
     <div class="pager"><span>${prev ? `<a href="#/ch1/${prev.id}">← ${prev.id} · ${esc(prev.title)}</a>` : `<a href="#/ch1">← Chapter overview</a>`}</span>
       <span>${next ? `<a href="#/ch1/${next.id}">${next.id} · ${esc(next.title)} →</a>` : `<a href="#/pizza">Chapter 2 · The pizza ontology →</a>`}</span></div>
