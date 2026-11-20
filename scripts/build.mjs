@@ -56,4 +56,15 @@ for (const f of fs.readdirSync(path.join(root, 'source')).filter((f) => f.endsWi
   datasets.push(name);
 }
 fs.writeFileSync(path.join(out, 'data', 'keys.json'), JSON.stringify({ iterations: ITER, users: keys, datasets }, null, 1));
+// Cache-busting: stamp a content hash into the script URLs so browsers pick up new code at once.
+{
+  const { createHash } = await import('node:crypto');
+  const idx = path.join(out, 'index.html');
+  let html = fs.readFileSync(idx, 'utf8');
+  for (const f of ['vendor/engine.js', 'vendor/comunica-browser.js', 'chapter1.js']) {
+    const h = createHash('sha256').update(fs.readFileSync(path.join(out, f))).digest('hex').slice(0, 10);
+    html = html.replaceAll(new RegExp(`${f.replace(/[.]/g, '\\.')}\\?v=[0-9a-z]+`, 'g'), `${f}?v=${h}`);
+  }
+  fs.writeFileSync(idx, html);
+}
 console.log(`Built docs/ for ${Object.keys(keys).length} user(s), datasets: ${datasets.join(', ')}`);
