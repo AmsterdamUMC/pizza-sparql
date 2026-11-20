@@ -53,7 +53,9 @@ function simpleFetch(input, init = {}) {
     : /n-triples|turtle/.test(accept) ? 'application/n-triples, text/turtle' : accept.slice(0, 120));
   const ct = given.get('content-type');
   if (ct) headers.set('content-type', ct);
-  return fetch(url, { method: init.method || req?.method || 'GET', headers, body: init.body, signal: init.signal || req?.signal });
+  // no-store: DBpedia marks results cacheable for 30 days without "Vary: Origin", so a copy cached
+  // for another site would fail the CORS check here. Fresh requests also keep the data live.
+  return fetch(url, { method: init.method || req?.method || 'GET', headers, body: init.body, signal: init.signal || req?.signal, cache: 'no-store' });
 }
 
 // Runs any SPARQL query on an in-memory store or on a remote endpoint URL (string).
