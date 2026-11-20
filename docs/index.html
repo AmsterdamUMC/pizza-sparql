@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Pizza SPARQL</title>
-<meta name="description" content="SPARQL practical on the pizza ontology for Reasoning with Health Data (MAM04, Master Medical Informatics, University of Amsterdam / Amsterdam UMC).">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8D%95%3C/text%3E%3C/svg%3E">
+<title>SPARQL Practical</title>
+<meta name="description" content="SPARQL practical for Reasoning with Health Data (MAM04, Master Medical Informatics, University of Amsterdam / Amsterdam UMC).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%94%8D%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <style>
   :root {
@@ -84,6 +84,40 @@
   #resource { display: none; margin-top: 16px; }
   #resource h2 { font-size: 17px; margin: 0 0 8px; word-break: break-all; }
   @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+  /* navigation and views */
+  nav.chapters { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.chapters a { padding: 6px 10px; border-radius: 6px; color: var(--ink); font-size: 14px; }
+  nav.chapters a:hover { background: var(--bg); text-decoration: none; }
+  nav.chapters a.active { background: var(--bg); box-shadow: inset 0 -2px 0 var(--accent); font-weight: 600; }
+  .view { display: none; }
+  .page { max-width: 1000px; margin: 0 auto; padding: 20px 16px; }
+  .page h2 { font-size: 24px; margin: 4px 0 8px; }
+  .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); font-weight: 600; margin: 0; }
+  .prose p { max-width: 75ch; margin: 8px 0; }
+  .prose pre { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; overflow: auto; font-size: 13px; }
+  code { font-size: 0.92em; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 16px; }
+  .card { display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; color: var(--ink); }
+  a.card:hover { border-color: var(--accent); text-decoration: none; }
+  .card h3 { margin: 4px 0 6px; font-size: 17px; text-transform: none; letter-spacing: 0; color: var(--ink); }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+  .tasklist { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 8px; }
+  .tasklist a { display: flex; gap: 12px; align-items: baseline; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; color: var(--ink); }
+  .tasklist a:hover { border-color: var(--accent); text-decoration: none; }
+  .tag { font-family: ui-monospace, Menlo, monospace; font-weight: 700; color: var(--accent); min-width: 3.2em; }
+  .tasklist .concept { margin-left: auto; color: var(--muted); font-size: 13px; text-align: right; }
+  .done { color: #2e7d32; font-weight: 700; }
+  .meta { color: var(--muted); font-size: 13px; margin: 0 0 12px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .page h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 20px 0 4px; }
+  .returns { font-size: 14px; margin: 8px 0; }
+  .endpoint { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin: 16px 0 6px; }
+  .verdict { margin: 0 0 12px; padding: 10px 14px; border-radius: 8px; font-size: 14px; border: 1px solid var(--line); background: var(--panel); }
+  .verdict.ok { border-color: #2e7d32; box-shadow: inset 4px 0 0 #2e7d32; }
+  .verdict.bad { border-color: var(--err); box-shadow: inset 4px 0 0 var(--err); }
+  .verdict ul { margin: 4px 0; padding-left: 20px; }
+  details.hint { margin: 8px 0; font-size: 14px; } details.hint summary { cursor: pointer; color: var(--link); }
+  .refs { font-size: 13px; color: var(--muted); padding-left: 18px; }
+  .pager { display: flex; justify-content: space-between; gap: 8px; margin-top: 24px; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -97,12 +131,11 @@
     <p class="kicker">Master Medical Informatics · MAM04</p>
     <h1>Reasoning with Health Data: SPARQL</h1>
     <p class="sub">Data Driven Decision Making and Evaluation in Medicine</p>
-    <p>This is the query tool for the SPARQL part of the practical. It holds the same pizza
-      ontology you explored in WebProtégé, stored as RDF triples. Here you query those triples with
-      <strong>SPARQL</strong>, the standard query language for knowledge graphs.</p>
+    <p>This is the second practical: <strong>SPARQL</strong>, the standard query language for knowledge
+      graphs. Chapter 1 introduces SPARQL with live queries on DBpedia and Wikidata. Chapter 2 queries the
+      pizza ontology you explored in WebProtégé.</p>
     <p>Everything runs in your own browser with the <a href="https://comunica.dev" target="_blank" rel="noopener">Comunica</a>
-      query engine (IDLab, Ghent University – imec), with thanks to its developers. No installation is needed. Follow the questions in the
-      <a href="https://canvas.uva.nl/courses/59376/quizzes/128230?module_item_id=2826812" target="_blank" rel="noopener">Canvas quiz</a>.</p>
+      query engine (IDLab, Ghent University – imec), with thanks to its developers. No installation is needed.</p>
   </div>
   <form id="loginForm" autocomplete="on">
     <h2>Sign in</h2>
@@ -121,15 +154,26 @@
       <img src="img/uva.svg" alt="University of Amsterdam">
     </div>
     <div class="titles">
-      <h1>Pizza SPARQL</h1>
+      <h1>SPARQL Practical</h1>
       <span class="course">Reasoning with Health Data · MAM04 · Master Medical Informatics</span>
     </div>
+    <nav class="chapters" aria-label="Chapters">
+      <a href="#/" data-nav="home">Home</a>
+      <a href="#/ch1" data-nav="ch1">1 · Introduction to SPARQL</a>
+      <a href="#/pizza" data-nav="pizza">2 · The pizza ontology</a>
+    </nav>
     <span class="who" id="who"></span>
     <button id="logout" type="button">Sign out</button>
   </header>
+
+  <div class="view" id="homeView"></div>
+  <div class="view" id="chapterView"></div>
+  <div class="view" id="taskView"></div>
+
+  <div class="view" id="pizzaView">
   <div class="about">
     <details>
-      <summary>About this practical</summary>
+      <summary>Chapter 2 · The pizza ontology: about this chapter</summary>
       <p>This tool belongs to the <em>Reasoning with Health Data</em> practical of MAM04,
         Data Driven Decision Making and Evaluation in Medicine, in the Master Medical Informatics
         (University of Amsterdam / Amsterdam UMC).</p>
@@ -162,6 +206,7 @@
       </div>
     </section>
   </main>
+  </div>
   <footer>
     <p><strong>Acknowledgements.</strong> SPARQL queries on this page are run by
       <a href="https://comunica.dev" target="_blank" rel="noopener">Comunica</a>, an open-source (MIT)
@@ -172,15 +217,20 @@
       <a href="https://doi.org/10.1007/978-3-030-00668-6_15" target="_blank" rel="noopener">doi:10.1007/978-3-030-00668-6_15</a>.
       RDF parsing by <a href="https://github.com/rdfjs/N3.js" target="_blank" rel="noopener">N3.js</a>;
       query editor by <a href="https://codemirror.net/5/" target="_blank" rel="noopener">CodeMirror</a>.</p>
-    <p>Pizza ontology: Pizza Tutorial, University of Manchester (CO-ODE).
+    <p>Chapter 1 tasks adapted from <a href="https://koetai.github.io/scopoli-mam04/" target="_blank" rel="noopener">Scopoli · MAM04</a>;
+      data from <a href="https://www.dbpedia.org" target="_blank" rel="noopener">DBpedia</a> and
+      <a href="https://www.wikidata.org" target="_blank" rel="noopener">Wikidata</a>.
+      Pizza ontology: Pizza Tutorial, University of Manchester (CO-ODE).
       MAM04 · Master Medical Informatics · University of Amsterdam / Amsterdam UMC.</p>
   </footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sparql/sparql.min.js"></script>
+<script src="vendor/comunica-browser.js"></script>
 <script type="module">
 import { unlock, unlockWithKey, runQuery } from './vendor/engine.js';
+import { CHAPTER, ENDPOINTS, REFS } from './chapter1.js';
 
 const PREFIXES = {
   pizza: 'http://www.co-ode.org/ontologies/pizza/pizza.owl#',
@@ -248,8 +298,8 @@ function showApp(user) {
   $('login').style.display = 'none';
   $('app').style.display = 'block';
   $('who').textContent = `Signed in as ${user}`;
-  editor.refresh();
   if (!editor.getValue()) loadSaved('PizzaLabel');
+  route();
 }
 
 $('loginForm').addEventListener('submit', async (e) => {
@@ -296,17 +346,33 @@ function loadSaved(name) {
 }
 
 // ---------- rendering ----------
+const DISPLAY = {
+  ...PREFIXES,
+  dbr: 'http://dbpedia.org/resource/', dbo: 'http://dbpedia.org/ontology/', dbp: 'http://dbpedia.org/property/',
+  wd: 'http://www.wikidata.org/entity/', wdt: 'http://www.wikidata.org/prop/direct/',
+  foaf: 'http://xmlns.com/foaf/0.1/', dct: 'http://purl.org/dc/terms/', schema: 'http://schema.org/',
+  prov: 'http://www.w3.org/ns/prov#',
+};
 function shorten(iri) {
-  for (const [p, ns] of Object.entries(PREFIXES)) if (iri.startsWith(ns)) return `${p}:${iri.slice(ns.length)}`;
+  for (const [p, ns] of Object.entries(DISPLAY)) if (iri.startsWith(ns) && !/[/#]/.test(iri.slice(ns.length))) return `${p}:${iri.slice(ns.length)}`;
   return iri;
 }
-function termNode(t) {
+// external: IRIs open the real resource in a new tab (chapter 1); otherwise they open the pizza resource view.
+function termNode(t, external = false) {
   if (!t) return document.createTextNode('');
+  if (t.termType === 'NamedNode' && external) {
+    const a = document.createElement('a');
+    a.href = t.value; a.target = '_blank'; a.rel = 'noopener'; a.textContent = shorten(t.value); a.title = t.value;
+    return a;
+  }
   if (t.termType === 'NamedNode') {
     const a = document.createElement('a');
     a.href = '#'; a.textContent = shorten(t.value); a.title = t.value;
     a.addEventListener('click', (e) => { e.preventDefault(); showResource(t.value); });
     return a;
+  }
+  if (t.termType === 'BlankNode' && (external || !store)) {
+    const s = document.createElement('span'); s.className = 'lang'; s.textContent = '_:' + t.value; return s;
   }
   if (t.termType === 'BlankNode') {
     const s = document.createElement('span');
@@ -332,10 +398,16 @@ function termNode(t) {
   }
   const span = document.createElement('span');
   span.textContent = t.value;
-  if (t.language) { const l = document.createElement('span'); l.className = 'lang'; l.textContent = ' @' + t.language; span.append(l); }
+  // Comunica 4's browser build sometimes reports the language tag as datatype.language.
+  const lang = t.language || t.datatype?.language;
+  if (lang) { const l = document.createElement('span'); l.className = 'lang'; l.textContent = ' @' + lang; span.append(l); }
+  else if (t.datatype?.value && !/#(string|integer|decimal|double|int|long|langString)$/.test(t.datatype.value)) {
+    const l = document.createElement('span'); l.className = 'lang';
+    l.textContent = ' ^^' + t.datatype.value.replace('http://www.w3.org/2001/XMLSchema#', 'xsd:'); span.append(l);
+  }
   return span;
 }
-function table(vars, rows) {
+function table(vars, rows, external = false) {
   if (!rows.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'No results.'; return d; }
   const t = document.createElement('table');
   const head = t.createTHead().insertRow();
@@ -345,7 +417,7 @@ function table(vars, rows) {
   rows.forEach((r, i) => {
     const tr = body.insertRow();
     const n = tr.insertCell(); n.className = 'n'; n.textContent = i + 1;
-    r.forEach((term) => tr.insertCell().append(termNode(term)));
+    r.forEach((term) => tr.insertCell().append(termNode(term, external)));
   });
   return t;
 }
@@ -389,6 +461,174 @@ async function showResource(iri) {
   $('resBody').append(table(['direction', 'property', 'value'], rows));
   $('resource').style.display = 'block';
   $('resource').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ================= chapters, routing =================
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const local = () => { try { return window.localStorage; } catch { return null; } };
+const solved = new Set((() => { try { return JSON.parse(local()?.getItem('sparqlSolved') || '[]'); } catch { return []; } })());
+function markSolved(id) {
+  const first = !solved.has(id); solved.add(id);
+  try { local()?.setItem('sparqlSolved', JSON.stringify([...solved])); } catch {}
+  return first;
+}
+const drafts = {};
+function cite(key) {
+  const r = REFS[key]; if (!r) return '';
+  const link = r.doi ? `https://doi.org/${r.doi}` : r.url;
+  return `${esc(r.authors)} (${r.year}). ${esc(r.title)}. <i>${esc(r.venue)}</i>. <a href="${link}" target="_blank" rel="noopener">${esc(r.doi ? 'doi:' + r.doi : link.replace(/^https?:\/\//, ''))}</a>`;
+}
+
+function show(viewId, nav) {
+  document.querySelectorAll('.view').forEach((v) => { v.style.display = v.id === viewId ? 'block' : 'none'; });
+  document.querySelectorAll('nav.chapters a').forEach((a) => a.classList.toggle('active', a.dataset.nav === nav));
+  window.scrollTo(0, 0);
+}
+
+function route() {
+  if ($('app').style.display !== 'block') return;
+  const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+  if (parts[0] === 'pizza') { show('pizzaView', 'pizza'); editor.refresh(); return; }
+  if (parts[0] === 'ch1' && parts[1]) {
+    const i = CHAPTER.tasks.findIndex((t) => t.id === parts[1].toUpperCase());
+    if (i >= 0) { renderTask(i); show('taskView', 'ch1'); taskEditor.refresh(); return; }
+  }
+  if (parts[0] === 'ch1') { renderChapter(); show('chapterView', 'ch1'); return; }
+  renderHome(); show('homeView', 'home');
+}
+window.addEventListener('hashchange', route);
+
+function renderHome() {
+  const n = CHAPTER.tasks.filter((t) => solved.has(t.id)).length;
+  $('homeView').innerHTML = `<div class="page prose">
+    <p class="kicker">Master Medical Informatics · MAM04 · Practical 2</p>
+    <h2>Reasoning with Health Data: SPARQL</h2>
+    <p>Data Driven Decision Making and Evaluation in Medicine. In the first practical you modelled knowledge as an
+      ontology in Protégé. In this practical you <b>query</b> knowledge graphs with SPARQL, the standard query
+      language for linked data, and see what clinical questions such data can and cannot answer.</p>
+    <div class="cards">
+      <a class="card" href="#/ch1"><p class="kicker">Chapter 1</p><h3>Introduction to SPARQL</h3>
+        <p>Triple patterns, variables, prefixes, literals and GROUP BY, with live queries on DBpedia and Wikidata about curries and food allergies. ${n} / ${CHAPTER.tasks.length} tasks solved.</p></a>
+      <a class="card" href="#/pizza"><p class="kicker">Chapter 2</p><h3>The pizza ontology</h3>
+        <p>Query the pizza ontology from the Protégé practical: classes, restrictions and the hierarchy a reasoner infers.</p></a>
+    </div></div>`;
+}
+
+function renderChapter() {
+  $('chapterView').innerHTML = `<div class="page prose">
+    <p class="kicker">Chapter ${CHAPTER.number}</p>
+    <h2>${esc(CHAPTER.title)}</h2>
+    ${CHAPTER.intro}
+    <ol class="tasklist">${CHAPTER.tasks.map((t) => `<li><a href="#/ch1/${t.id}">
+      <span class="tag">${t.id}</span><span>${esc(t.title)}${solved.has(t.id) ? ' <span class="done" title="solved">✓</span>' : ''}</span>
+      <span class="concept">${esc(t.concept)} · ${esc(ENDPOINTS[t.endpoint].name)}${t.q ? ` · ${esc(CHAPTER.quiz.name)} Q${t.q}` : ''}</span></a></li>`).join('')}</ol>
+    <p>Enter your answers in the <a href="${CHAPTER.quiz.url}" target="_blank" rel="noopener">${esc(CHAPTER.quiz.name)} on Canvas</a>.</p>
+  </div>`;
+}
+
+function withPrefixes(ep, query) {
+  const pf = ENDPOINTS[ep].prefixes; if (!pf) return query;
+  const missing = Object.entries(pf).filter(([p]) => !new RegExp(`PREFIX\\s+${p}:`, 'i').test(query));
+  return missing.map(([p, iri]) => `PREFIX ${p}: <${iri}>`).join('\n') + (missing.length ? '\n' : '') + query;
+}
+const refCache = {};
+const runRemote = (ep, q) => runQuery(ENDPOINTS[ep].url, withPrefixes(ep, q));
+const keySet = (res, vars) => {
+  const idx = vars.map((v) => res.vars.indexOf(v));
+  const val = (t) => { if (!t) return ''; const l = t.language || t.datatype?.language; return l ? `${t.value}@${l}` : t.value; };
+  return new Set(res.rows.map((r) => idx.map((i) => val(r[i])).join(' │ ')));
+};
+
+let taskEditor = null;
+function renderTask(i) {
+  const t = CHAPTER.tasks[i], ep = ENDPOINTS[t.endpoint];
+  const prev = CHAPTER.tasks[i - 1], next = CHAPTER.tasks[i + 1];
+  $('taskView').innerHTML = `<div class="page prose">
+    <p class="kicker"><a href="#/ch1">Chapter 1 · ${esc(CHAPTER.title)}</a> › Task ${i + 1} of ${CHAPTER.tasks.length} · ${t.id}</p>
+    <h2>${esc(t.title)}${solved.has(t.id) ? ' <span class="done" title="solved">✓</span>' : ''}</h2>
+    <p class="meta"><span>Concept: <b>${esc(t.concept)}</b></span><span>Where: <b>${esc(ep.name)}</b></span>${t.q ? `<span>${esc(CHAPTER.quiz.name)}: <b>Question ${t.q}</b></span>` : ''}</p>
+    <h3>Background</h3>${t.story}
+    ${t.lesson ? `<h3>The concept</h3>${t.lesson}` : ''}
+    <h3>Problem</h3>${t.task}
+    <p class="returns">Return: ${t.returns.map((v) => `<code>?${v}</code>`).join(' ')}${t.check.length < t.returns.length ? ` · checked on ${t.check.map((v) => `<code>?${v}</code>`).join(' ')}` : ''}</p>
+    ${t.hint ? `<details class="hint"><summary>Hint</summary><p>${esc(t.hint)}</p></details>` : ''}
+    <div class="endpoint"><span>Engine: <b>Comunica</b>, in your browser → endpoint: <b>${esc(ep.name)}</b></span><a href="#" id="openUi" target="_blank" rel="noopener">open in ${esc(ep.name)} ↗</a></div>
+    <div class="editor"><textarea id="taskQuery"></textarea></div>
+    <div class="bar">
+      <button class="primary" id="taskRun" type="button">▶ Run</button>
+      <button id="taskSubmit" type="button">Submit answer</button>
+      <button id="taskReset" type="button">Reset</button>
+      <span class="status" id="taskStatus">⌘/Ctrl + Enter to run</span>
+    </div>
+    <div id="verdict"></div>
+    <div id="explain"></div>
+    <div class="results" id="taskResults"><div class="empty">Run the query to see results.</div></div>
+    ${t.refs?.length ? `<h3>Further reading</h3><ul class="refs">${t.refs.map((r) => `<li>${cite(r)}</li>`).join('')}</ul>` : ''}
+    <div class="pager"><span>${prev ? `<a href="#/ch1/${prev.id}">← ${prev.id} · ${esc(prev.title)}</a>` : `<a href="#/ch1">← Chapter overview</a>`}</span>
+      <span>${next ? `<a href="#/ch1/${next.id}">${next.id} · ${esc(next.title)} →</a>` : `<a href="#/pizza">Chapter 2 · The pizza ontology →</a>`}</span></div>
+  </div>`;
+  taskEditor = CodeMirror.fromTextArea($('taskQuery'), {
+    mode: 'application/sparql-query', lineNumbers: true, lineWrapping: true,
+    extraKeys: { 'Ctrl-Enter': () => go(false), 'Cmd-Enter': () => go(false) },
+  });
+  taskEditor.setValue(drafts[t.id] ?? t.starter);
+  taskEditor.on('change', () => { drafts[t.id] = taskEditor.getValue(); });
+  $('openUi').addEventListener('click', () => { $('openUi').href = ep.ui(taskEditor.getValue()); });
+  $('taskReset').addEventListener('click', () => { taskEditor.setValue(t.starter); $('verdict').innerHTML = ''; });
+  $('taskRun').addEventListener('click', () => go(false));
+  $('taskSubmit').addEventListener('click', () => go(true));
+  if (solved.has(t.id)) showExplain(t);
+
+  async function go(submit) {
+    $('taskRun').disabled = $('taskSubmit').disabled = true;
+    $('verdict').innerHTML = '';
+    $('taskStatus').textContent = `Running on ${ep.name}…`;
+    const t0 = performance.now();
+    try {
+      // One request at a time: public endpoints rate-limit, and a class often shares one IP address.
+      const mine = await runRemote(t.endpoint, taskEditor.getValue());
+      if (mine.type !== 'bindings') throw new Error('Only SELECT queries are supported here.');
+      $('taskStatus').textContent = `${mine.rows.length} row${mine.rows.length === 1 ? '' : 's'} in ${((performance.now() - t0) / 1000).toFixed(1)} s`;
+      const box = $('taskResults'); box.innerHTML = ''; box.append(table(mine.vars, mine.rows, true));
+      if (submit) {
+        $('taskStatus').textContent += ' · checking…';
+        let want, note = '';
+        try {
+          const ref = await (refCache[t.id] ||= runRemote(t.endpoint, t.solution).catch((e) => { delete refCache[t.id]; throw e; }));
+          want = keySet(ref, t.check);
+        } catch (e) {
+          if (!t.recorded) throw e;
+          want = new Set(t.recorded.keys);
+          note = ` <span class="lang">(${esc(ep.name)} didn't answer the reference query, so this was checked against the answer recorded on ${esc(t.recorded.date)}.)</span>`;
+        }
+        $('taskStatus').textContent = $('taskStatus').textContent.replace(' · checking…', '');
+        $('verdict').innerHTML = judge(t, mine, want, note);
+      }
+    } catch (err) {
+      $('taskStatus').textContent = 'Query failed';
+      const msg = String(err.message || err);
+      $('verdict').innerHTML = `<div class="verdict bad"><b>Error.</b> ${/\b429\b/.test(msg)
+        ? `${esc(ep.name)} says “too many requests”. Wait a minute and try again.`
+        : esc(msg.split('\n').slice(0, 4).join(' '))}</div>`;
+    } finally { $('taskRun').disabled = $('taskSubmit').disabled = false; }
+  }
+}
+
+function judge(t, mine, want, note = '') {
+  const absent = t.check.filter((c) => !mine.vars.includes(c));
+  if (absent.length) return `<div class="verdict bad"><b>Not quite.</b> Your result needs a column named ${absent.map((c) => `<code>?${c}</code>`).join(', ')}.</div>`;
+  const got = keySet(mine, t.check);
+  const miss = [...want].filter((k) => !got.has(k)), extra = [...got].filter((k) => !want.has(k));
+  if (!miss.length && !extra.length) {
+    markSolved(t.id); showExplain(t);
+    return `<div class="verdict ok"><b>Correct!</b> ${want.size} expected value${want.size === 1 ? '' : 's'} matched.${note}</div>`;
+  }
+  const list = (arr) => arr.slice(0, 3).map((k) => `<li><code>${esc(k.split(' │ ').map((v) => (v ? shorten(v) : '(no value)')).join(' │ '))}</code></li>`).join('') + (arr.length > 3 ? `<li>… and ${arr.length - 3} more</li>` : '');
+  return `<div class="verdict bad"><b>Not quite.</b> Matched ${want.size - miss.length} of ${want.size} expected value${want.size === 1 ? '' : 's'} in ${t.check.map((c) => `<code>?${c}</code>`).join(', ')}.
+    ${miss.length ? `<div>Missing:</div><ul>${list(miss)}</ul>` : ''}${extra.length ? `<div>Unexpected:</div><ul>${list(extra)}</ul>` : ''}${note}</div>`;
+}
+function showExplain(t) {
+  if (t.explain) $('explain').innerHTML = `<div class="verdict ok"><b>Why.</b> ${t.explain}</div>`;
 }
 </script>
 </body>

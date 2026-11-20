@@ -1,7 +1,15 @@
-# Pizza SPARQL (GraphDB replacement)
+# SPARQL Practical (MAM04)
 
-A static SPARQL workbench for the pizza practical. It runs [Comunica](https://comunica.dev)
-entirely in the browser, so it can be hosted on GitHub Pages: no server needed.
+The second practical of *Reasoning with Health Data* (MAM04, Master Medical Informatics, UvA /
+Amsterdam UMC), live at https://amsterdamumc.github.io/pizza-sparql/. Everything runs in the browser
+with [Comunica](https://comunica.dev), so it is hosted on GitHub Pages without a server.
+
+- **Chapter 1 · Introduction to SPARQL** (`#/ch1`): four tasks adapted from
+  [Scopoli · MAM04](https://koetai.github.io/scopoli-mam04/) (GREN, ALLC, PREF, CNTA), run live on
+  DBpedia and Wikidata. *Submit answer* compares the student's result with a reference query on the
+  checked variables. Task text, starters and solutions live in `docs/chapter1.js`.
+- **Chapter 2 · The pizza ontology** (`#/pizza`): the GraphDB replacement, querying the encrypted
+  pizza ontology locally.
 
 ## Acknowledgements
 
@@ -37,7 +45,7 @@ page for the course. Because the inferred class hierarchy is already in the sour
 
 | Path | Published? | What it is |
 |---|---|---|
-| `docs/` | yes (GitHub Pages) | `index.html`, `vendor/engine.js` (Comunica + N3 bundle), `data/*.enc`, `data/keys.json` |
+| `docs/` | yes (GitHub Pages) | `index.html`, `chapter1.js`, `vendor/comunica-browser.js` (official Comunica 4.5 browser build), `vendor/engine.js` (N3 + decryption), `data/*.enc`, `data/keys.json`, `img/` (logos) |
 | `source/*.ttl` | **no** (git-ignored) | plaintext data, all `.ttl` files are loaded |
 | `users.local.json` | **no** (git-ignored) | `{ "username": "password", ... }` |
 | `src/`, `scripts/build.mjs` | yes (harmless) | source of the bundle and the build/encrypt script |

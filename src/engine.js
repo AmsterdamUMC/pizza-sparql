@@ -1,8 +1,8 @@
 // Browser entry: decrypts the dataset and runs SPARQL with Comunica over an in-memory N3 store.
-import { QueryEngine } from '@comunica/query-sparql-rdfjs';
 import { Parser, Store } from 'n3';
 
-const engine = new QueryEngine();
+// Comunica's official browser build (vendor/comunica-browser.js) provides the global `Comunica`.
+let engine = null;
 const dec = new TextDecoder();
 const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 
@@ -39,9 +39,14 @@ export async function unlockWithKey(rawB64, base = 'data/') {
   return store;
 }
 
-// Runs any SPARQL query. Returns {type:'bindings', vars, rows} | {type:'boolean', value} | {type:'quads', quads}
-export async function runQuery(store, query) {
-  const result = await engine.query(query, { sources: [store] });
+// Runs any SPARQL query on an in-memory store or on a remote endpoint URL (string).
+// Returns {type:'bindings', vars, rows} | {type:'boolean', value} | {type:'quads', quads}
+export async function runQuery(source, query) {
+  engine ||= new globalThis.Comunica.QueryEngine();
+  const remote = typeof source === 'string';
+  const result = await engine.query(query, remote
+    ? { sources: [{ type: 'sparql', value: source }], httpTimeout: 90000 }
+    : { sources: [source] });
   if (result.resultType === 'bindings') {
     const { variables } = await result.metadata();
     const vars = variables.map((v) => (v.variable || v).value);
