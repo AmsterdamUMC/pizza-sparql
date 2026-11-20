@@ -3,6 +3,20 @@
 A static SPARQL workbench for the pizza practical. It runs [Comunica](https://comunica.dev)
 entirely in the browser, so it can be hosted on GitHub Pages: no server needed.
 
+## Acknowledgements
+
+This tool is built on [Comunica](https://comunica.dev), an open-source (MIT) modular SPARQL query
+engine developed at IDLab, Ghent University – imec. We are grateful to the Comunica team for making
+it freely available. If you use it, please cite:
+
+> Ruben Taelman, Joachim Van Herwegen, Miel Vander Sande, Ruben Verborgh.
+> *Comunica: a Modular SPARQL Query Engine for the Web.* Proceedings of the 17th International
+> Semantic Web Conference (ISWC 2018). https://doi.org/10.1007/978-3-030-00668-6_15
+
+Also used: [N3.js](https://github.com/rdfjs/N3.js) (RDF parsing and in-memory store),
+[CodeMirror 5](https://codemirror.net/5/) (query editor), and the Pizza ontology from the
+University of Manchester Pizza Tutorial (CO-ODE).
+
 ## How the password protection works
 
 GitHub Pages can't do server-side logins, so the data itself is encrypted:

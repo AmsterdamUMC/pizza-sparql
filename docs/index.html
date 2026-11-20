@@ -46,6 +46,7 @@
   .about summary { cursor: pointer; font-weight: 600; }
   .about p { margin: 8px 0; max-width: 75ch; }
   footer { max-width: 1400px; margin: 0 auto; padding: 16px; color: var(--muted); font-size: 12px; }
+  footer p { margin: 0 0 6px; max-width: 110ch; }
   /* login */
   #login { max-width: 560px; margin: 6vh auto; padding: 24px 16px; display: grid; gap: 16px; }
   #login .logos { justify-content: center; flex-wrap: wrap; padding: 14px; }
@@ -100,7 +101,7 @@
       ontology you explored in WebProtégé, stored as RDF triples. Here you query those triples with
       <strong>SPARQL</strong>, the standard query language for knowledge graphs.</p>
     <p>Everything runs in your own browser with the <a href="https://comunica.dev" target="_blank" rel="noopener">Comunica</a>
-      query engine. No installation is needed. Follow the questions in the
+      query engine (IDLab, Ghent University – imec), with thanks to its developers. No installation is needed. Follow the questions in the
       <a href="https://canvas.uva.nl/courses/59376/quizzes/128232" target="_blank" rel="noopener">Canvas quiz</a>.</p>
   </div>
   <form id="loginForm" autocomplete="on">
@@ -162,9 +163,17 @@
     </section>
   </main>
   <footer>
-    MAM04 · Master Medical Informatics · University of Amsterdam / Amsterdam UMC.
-    Pizza ontology: Pizza Tutorial, University of Manchester (CO-ODE). Query engine:
-    <a href="https://comunica.dev" target="_blank" rel="noopener">Comunica</a>.
+    <p><strong>Acknowledgements.</strong> SPARQL queries on this page are run by
+      <a href="https://comunica.dev" target="_blank" rel="noopener">Comunica</a>, an open-source (MIT)
+      modular SPARQL query engine developed at IDLab, Ghent University – imec. We thank the Comunica team for
+      making it freely available. If you use it in your own work, please cite: R. Taelman, J. Van Herwegen,
+      M. Vander Sande and R. Verborgh, “Comunica: a Modular SPARQL Query Engine for the Web”, <em>Proceedings
+      of the 17th International Semantic Web Conference (ISWC 2018)</em>,
+      <a href="https://doi.org/10.1007/978-3-030-00668-6_15" target="_blank" rel="noopener">doi:10.1007/978-3-030-00668-6_15</a>.
+      RDF parsing by <a href="https://github.com/rdfjs/N3.js" target="_blank" rel="noopener">N3.js</a>;
+      query editor by <a href="https://codemirror.net/5/" target="_blank" rel="noopener">CodeMirror</a>.</p>
+    <p>Pizza ontology: Pizza Tutorial, University of Manchester (CO-ODE).
+      MAM04 · Master Medical Informatics · University of Amsterdam / Amsterdam UMC.</p>
   </footer>
 </div>
 
