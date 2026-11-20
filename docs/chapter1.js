@@ -36,6 +36,7 @@ const pre = (q) => `<pre>${q.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</pre>
 const Q = {
   green: 'select ?p ?o\nwhere { <http://dbpedia.org/resource/Green_curry> ?p ?o }',
   allCurries: 'select ?s ?country\nWHERE {\n  ?s <http://dbpedia.org/ontology/type> <http://dbpedia.org/resource/Curry> .\n  ?s <http://dbpedia.org/ontology/country> ?country .\n}\nORDER BY ?country',
+  prefixed: DBP + 'select ?s ?country\nWHERE {\n  ?s dbo:type dbr:Curry .\n  ?s dbo:country ?country .\n}\nORDER BY ?country',
   thaiLiteral: DBP + 'select ?s\nWHERE {\n  ?s dbo:type dbr:Curry .\n  ?s dbp:country "Thailand"@en .\n}',
   curryAllergy: `SELECT DISTINCT ?curry ?curryLabel ?ingredientLabel ?allergy ?allergyLabel\nWHERE {\n  ?curry wdt:P279* wd:Q164606 .\n  ?curry wdt:P186 ?ingredient .\n  ?allergy wdt:P279* wd:Q769815 .\n  ?allergy wdt:P828 ?ingredient .\n  ${LABEL}\n}\nORDER BY ?curryLabel`,
   perAllergy: `SELECT ?allergy ?allergyLabel (COUNT(DISTINCT ?curry) AS ?n)\nWHERE {\n  ?curry wdt:P279* wd:Q164606 .\n  ?curry wdt:P186 ?ingredient .\n  ?allergy wdt:P279* wd:Q769815 .\n  ?allergy wdt:P828 ?ingredient .\n  ${LABEL}\n}\nGROUP BY ?allergy ?allergyLabel\nORDER BY DESC(?n)`,
@@ -93,7 +94,7 @@ export const CHAPTER = {
       body: `<p>The lengthy names in the query are not ideal, and we may use more of those, so it is nice to have a shorthand.</p>
         <p>We use <code>PREFIX</code> to create such shorthands for everything up to the last <code>#</code> or <code>/</code> .</p>
         <p>The name (ending with a colon “:” ) can be anything, but is usually an acronym or abbreviation of the vocabulary, which helps us remind what it’s about. You could as well call them <code>src1:</code> <code>src2:</code> <code>qwerty:</code> if you prefer (but you won’t!).</p>
-        ${pre(DBP + 'select ?s ?countryName\nWHERE {\n  ?s dbo:type dbr:Curry .\n  ?s dbo:country ?country .\n}')}
+        ${pre(Q.prefixed)}
         <p>You will see that this query shows exactly the same results as the previous one.</p>
         <p>Now lets try to get the name of the country as text. Remember, these are literals, i.e., they don’t point to other resources. Modify the query to find all curries with the object literal <code>"Thailand"@en</code>.</p>
         <p><b>Answer Question set 3</b> (Questions 6 – 7 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
@@ -104,7 +105,7 @@ export const CHAPTER = {
       task: `<p><b>Devise</b> a query, using the prefixes in the editor, for all curries (<code>dbo:type dbr:Curry</code>) whose raw country <code>dbp:country</code> is the literal <code>"Thailand"@en</code>.</p>`,
       hint: 'Two triple patterns that share ?s, each ending with a period. Write the literal exactly as "Thailand"@en.',
       returns: ['s'], check: ['s'],
-      starter: DBP + 'select ?s\nWHERE {\n  \n}',
+      starter: Q.prefixed,
       solution: Q.thaiLiteral,
       explain: 'With prefixes, dbr:Curry stands for &lt;http://dbpedia.org/resource/Curry&gt;. The object "Thailand"@en is a literal, not a link. Try dbr:Thailand instead: you get a different set of curries.',
       refs: ['sparql11'],
