@@ -45,13 +45,14 @@ export const CHAPTER = {
   id: 'ch1',
   number: 1,
   title: 'Introduction to SPARQL',
-  quiz: { name: 'SPARQL quiz', url: 'https://canvas.uva.nl/courses/59376/quizzes/128232' },
+  quiz: { name: 'SPARQL quiz', url: 'https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720' },
   intro: `<p>SPARQL is the query language for linked data. Linked data is a web of <b>triples</b>
     (subject, predicate, object), and a SPARQL query describes a pattern of triples with some parts left open as
     <b>variables</b>. The endpoint returns every way the pattern matches its data.</p>
     <p>In this chapter you query two public, crowd-sourced knowledge graphs, <b>DBpedia</b> and <b>Wikidata</b>, about
     curry: from all facts about one dish, through all curries and the shorthand of prefixes, to counting which food
-    allergies curries can trigger. Each task runs live; press <b>Submit answer</b> to check your result.</p>
+    allergies curries can trigger. Each task runs live, answer the related questions on
+    <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>.</p>
     <p>Both sources are crowd-sourced. Expect missing results, duplicates and inconsistent representations, and expect
     counts to change slightly over time. For background, see pages 38–46 of <i>Semantics for Dummies</i> and the
     SPARQL lecture slides.</p>`,
