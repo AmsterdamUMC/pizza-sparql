@@ -1,0 +1,13 @@
+{
+ "iterations": 250000,
+ "users": {
+  "student": {
+   "salt": "Hlku1ImcZzXiFXn1c7SnXw==",
+   "iv": "KTPpW7zW32IQnkVe",
+   "key": "43OgEKji+GUEHt/HEd++qPnNqRpiDxcv2PHb2JMakS72rB8bZWDWGgCeajkq+rtE"
+  }
+ },
+ "datasets": [
+  "pizza"
+ ]
+}

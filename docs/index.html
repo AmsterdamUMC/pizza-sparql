@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Pizza SPARQL</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<style>
+  :root {
+    --bg: #f6f5f2; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6a66; --line: #dddad3;
+    --accent: #b8401f; --accent-ink: #ffffff; --link: #1f5fb8; --err: #b3261e; --row: #faf9f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #181816; --panel: #22221f; --ink: #ecebe6; --muted: #a3a29c; --line: #3a3934;
+      --accent: #e0673f; --accent-ink: #1a0f0a; --link: #8ab4f8; --err: #f28b82; --row: #1e1e1b;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #181816; --panel: #22221f; --ink: #ecebe6; --muted: #a3a29c; --line: #3a3934;
+    --accent: #e0673f; --accent-ink: #1a0f0a; --link: #8ab4f8; --err: #f28b82; --row: #1e1e1b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: var(--link); text-decoration: none; } a:hover { text-decoration: underline; }
+  header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { font-size: 17px; margin: 0; font-weight: 650; }
+  header .who { margin-left: auto; color: var(--muted); font-size: 13px; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .6; cursor: wait; }
+  /* login */
+  #login { max-width: 360px; margin: 12vh auto; padding: 24px 16px; }
+  #login form { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 24px; display: grid; gap: 12px; }
+  #login h2 { margin: 0 0 4px; font-size: 20px; }
+  #login p { margin: 0; color: var(--muted); font-size: 14px; }
+  label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+  input, select { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+  .error { color: var(--err); font-size: 14px; min-height: 1.2em; }
+  /* workbench */
+  #app { display: none; }
+  main { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; }
+  aside h3, section h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; }
+  aside ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  aside li button { width: 100%; text-align: left; border: 0; background: transparent; padding: 6px 8px; }
+  aside li button:hover, aside li button.active { background: var(--panel); }
+  aside li button.active { box-shadow: inset 3px 0 0 var(--accent); font-weight: 600; }
+  .editor { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+  .CodeMirror { height: 260px; font-size: 14px; }
+  .bar { display: flex; gap: 8px; align-items: center; margin: 10px 0 16px; flex-wrap: wrap; }
+  .bar .status { color: var(--muted); font-size: 13px; }
+  .results { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: auto; max-height: 60vh; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { position: sticky; top: 0; background: var(--panel); font-weight: 600; }
+  tr:nth-child(even) td { background: var(--row); }
+  td.n { color: var(--muted); width: 1%; }
+  .lang { color: var(--muted); font-size: 12px; }
+  .empty { padding: 16px; color: var(--muted); }
+  #resource { display: none; margin-top: 16px; }
+  #resource h2 { font-size: 17px; margin: 0 0 8px; word-break: break-all; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <form id="loginForm" autocomplete="on">
+    <h2>Pizza SPARQL</h2>
+    <p>Sign in with the user name and password from the course page.</p>
+    <label>User name <input id="user" name="username" autocomplete="username" required></label>
+    <label>Password <input id="pw" name="password" type="password" autocomplete="current-password" required></label>
+    <button class="primary" id="loginBtn" type="submit">Sign in</button>
+    <div class="error" id="loginErr" role="alert"></div>
+  </form>
+</div>
+
+<div id="app">
+  <header>
+    <h1>Pizza SPARQL</h1>
+    <span class="who" id="who"></span>
+    <button id="logout" type="button">Sign out</button>
+  </header>
+  <main>
+    <aside>
+      <h3>Saved queries</h3>
+      <ul id="saved"></ul>
+    </aside>
+    <section>
+      <h3>SPARQL query</h3>
+      <div class="editor"><textarea id="query"></textarea></div>
+      <div class="bar">
+        <button class="primary" id="run" type="button">Run</button>
+        <span class="status" id="status"></span>
+      </div>
+      <div class="results" id="results"><div class="empty">Choose a saved query or write your own, then press Run (Ctrl/⌘ + Enter).</div></div>
+      <div id="resource">
+        <h2 id="resTitle"></h2>
+        <div class="results" id="resBody"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sparql/sparql.min.js"></script>
+<script type="module">
+import { unlock, unlockWithKey, runQuery } from './vendor/engine.js';
+
+const PREFIXES = {
+  pizza: 'http://www.co-ode.org/ontologies/pizza/pizza.owl#',
+  rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+  rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
+  owl: 'http://www.w3.org/2002/07/owl#',
+  xsd: 'http://www.w3.org/2001/XMLSchema#',
+};
+const HEADER = Object.entries(PREFIXES).map(([p, iri]) => `PREFIX ${p}: <${iri}>`).join('\n');
+
+const SAVED = {
+  PizzaLabel: `PREFIX pizza: <http://www.co-ode.org/ontologies/pizza/pizza.owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?pizza ?label WHERE {
+  ?pizza rdfs:subClassOf pizza:NamedPizza .
+  ?pizza rdfs:subClassOf pizza:CheeseyPizza .
+  #?pizza rdfs:subClassOf pizza:MeatyPizza .
+  OPTIONAL { ?pizza rdfs:label ?label . }
+}
+ORDER BY ?pizza`,
+  PizzaToppings: `${HEADER}
+
+SELECT ?pizza ?topping WHERE {
+  ?pizza rdfs:subClassOf pizza:NamedPizza .
+  ?pizza rdfs:subClassOf [ owl:onProperty pizza:hasTopping ;
+                           owl:someValuesFrom ?topping ] .
+}
+ORDER BY ?pizza ?topping`,
+  NamedPizzas: `${HEADER}
+
+SELECT ?pizza WHERE {
+  ?pizza rdfs:subClassOf pizza:NamedPizza .
+}
+ORDER BY ?pizza`,
+  ObjectProperties: `${HEADER}
+
+SELECT ?property ?parent WHERE {
+  ?property a owl:ObjectProperty .
+  OPTIONAL { ?property rdfs:subPropertyOf ?parent . }
+}
+ORDER BY ?property`,
+  Individuals: `${HEADER}
+
+SELECT ?individual ?type WHERE {
+  ?individual a owl:NamedIndividual ;
+              a ?type .
+  FILTER (?type != owl:NamedIndividual)
+}
+ORDER BY ?individual`,
+  CountTriples: `SELECT (COUNT(*) AS ?triples) WHERE { ?s ?p ?o }`,
+};
+
+const $ = (id) => document.getElementById(id);
+let store = null;
+const editor = CodeMirror.fromTextArea($('query'), {
+  mode: 'application/sparql-query', lineNumbers: true, lineWrapping: true,
+  extraKeys: { 'Ctrl-Enter': () => run(), 'Cmd-Enter': () => run() },
+});
+
+// ---------- login ----------
+function storage() { try { return window.sessionStorage; } catch { return null; } }
+
+function showApp(user) {
+  $('login').style.display = 'none';
+  $('app').style.display = 'block';
+  $('who').textContent = `Signed in as ${user}`;
+  editor.refresh();
+  if (!editor.getValue()) loadSaved('PizzaLabel');
+}
+
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('loginBtn').disabled = true; $('loginErr').textContent = ''; $('loginBtn').textContent = 'Unlocking…';
+  try {
+    const res = await unlock($('user').value, $('pw').value);
+    store = res.store;
+    try { storage()?.setItem('pizzaKey', res.key); storage()?.setItem('pizzaUser', $('user').value.trim()); } catch {}
+    showApp($('user').value.trim());
+  } catch (err) {
+    $('loginErr').textContent = err.message;
+  } finally {
+    $('loginBtn').disabled = false; $('loginBtn').textContent = 'Sign in';
+  }
+});
+
+$('logout').addEventListener('click', () => {
+  try { storage()?.removeItem('pizzaKey'); storage()?.removeItem('pizzaUser'); } catch {}
+  location.reload();
+});
+
+(async () => {
+  let key = null, user = null;
+  try { key = storage()?.getItem('pizzaKey'); user = storage()?.getItem('pizzaUser'); } catch {}
+  if (!key) return;
+  try { store = await unlockWithKey(key); showApp(user || ''); }
+  catch { try { storage()?.removeItem('pizzaKey'); } catch {} }
+})();
+
+// ---------- saved queries ----------
+for (const name of Object.keys(SAVED)) {
+  const li = document.createElement('li');
+  const b = document.createElement('button');
+  b.type = 'button'; b.textContent = name; b.dataset.name = name;
+  b.addEventListener('click', () => loadSaved(name));
+  li.append(b); $('saved').append(li);
+}
+function loadSaved(name) {
+  editor.setValue(SAVED[name]);
+  document.querySelectorAll('#saved button').forEach((b) => b.classList.toggle('active', b.dataset.name === name));
+  $('results').innerHTML = '<div class="empty">Press Run to execute this query.</div>';
+  $('status').textContent = '';
+}
+
+// ---------- rendering ----------
+function shorten(iri) {
+  for (const [p, ns] of Object.entries(PREFIXES)) if (iri.startsWith(ns)) return `${p}:${iri.slice(ns.length)}`;
+  return iri;
+}
+function termNode(t) {
+  if (!t) return document.createTextNode('');
+  if (t.termType === 'NamedNode') {
+    const a = document.createElement('a');
+    a.href = '#'; a.textContent = shorten(t.value); a.title = t.value;
+    a.addEventListener('click', (e) => { e.preventDefault(); showResource(t.value); });
+    return a;
+  }
+  if (t.termType === 'BlankNode') {
+    const s = document.createElement('span');
+    const one = (p) => store.getQuads(t, PREFIXES.owl + p, null, null)[0]?.object;
+    const prop = one('onProperty');
+    const kinds = [['someValuesFrom', 'some'], ['allValuesFrom', 'only'], ['hasValue', 'value'], ['minCardinality', 'min'], ['maxCardinality', 'max'], ['cardinality', 'exactly']];
+    const kind = kinds.find(([p]) => one(p));
+    if (prop && kind) {
+      s.append(termNode(prop), ` ${kind[1]} `, termNode(one(kind[0])));
+    } else {
+      const list = one('unionOf') || one('intersectionOf');
+      const items = [];
+      for (let n = list; n && n.value !== PREFIXES.rdf + 'nil'; n = store.getQuads(n, PREFIXES.rdf + 'rest', null, null)[0]?.object)
+        items.push(store.getQuads(n, PREFIXES.rdf + 'first', null, null)[0]?.object);
+      if (items.length) {
+        const op = one('unionOf') ? ' or ' : ' and ';
+        s.append('(');
+        items.forEach((it, i) => { if (i) s.append(op); s.append(termNode(it)); });
+        s.append(')');
+      } else { s.textContent = '_:' + t.value; s.className = 'lang'; }
+    }
+    return s;
+  }
+  const span = document.createElement('span');
+  span.textContent = t.value;
+  if (t.language) { const l = document.createElement('span'); l.className = 'lang'; l.textContent = ' @' + t.language; span.append(l); }
+  return span;
+}
+function table(vars, rows) {
+  if (!rows.length) { const d = document.createElement('div'); d.className = 'empty'; d.textContent = 'No results.'; return d; }
+  const t = document.createElement('table');
+  const head = t.createTHead().insertRow();
+  head.append(Object.assign(document.createElement('th'), { textContent: '' }));
+  for (const v of vars) head.append(Object.assign(document.createElement('th'), { textContent: v }));
+  const body = t.createTBody();
+  rows.forEach((r, i) => {
+    const tr = body.insertRow();
+    const n = tr.insertCell(); n.className = 'n'; n.textContent = i + 1;
+    r.forEach((term) => tr.insertCell().append(termNode(term)));
+  });
+  return t;
+}
+
+async function run() {
+  if (!store) return;
+  $('run').disabled = true; $('status').textContent = 'Running…';
+  $('resource').style.display = 'none';
+  const t0 = performance.now();
+  try {
+    const res = await runQuery(store, editor.getValue());
+    const ms = Math.round(performance.now() - t0);
+    const box = $('results'); box.innerHTML = '';
+    if (res.type === 'bindings') {
+      box.append(table(res.vars, res.rows));
+      $('status').textContent = `${res.rows.length} result${res.rows.length === 1 ? '' : 's'} in ${ms} ms`;
+    } else if (res.type === 'boolean') {
+      box.innerHTML = `<div class="empty">${res.value}</div>`; $('status').textContent = `${ms} ms`;
+    } else if (res.type === 'quads') {
+      box.append(table(['subject', 'predicate', 'object'], res.quads.map((q) => [q.subject, q.predicate, q.object])));
+      $('status').textContent = `${res.quads.length} triples in ${ms} ms`;
+    } else { box.innerHTML = '<div class="empty">Done.</div>'; }
+  } catch (err) {
+    $('results').innerHTML = ''; const d = document.createElement('div');
+    d.className = 'empty error'; d.textContent = err.message; $('results').append(d);
+    $('status').textContent = 'Query failed';
+  } finally { $('run').disabled = false; }
+}
+$('run').addEventListener('click', run);
+
+async function showResource(iri) {
+  // Read the store directly so blank-node restrictions keep their identity and can be expanded.
+  const lit = (v) => ({ termType: 'Literal', value: v });
+  const byProp = (a, b) => a.predicate.value.localeCompare(b.predicate.value);
+  const rows = [
+    ...store.getQuads(iri, null, null, null).sort(byProp).map((q) => [lit('outgoing'), q.predicate, q.object]),
+    ...store.getQuads(null, null, iri, null).filter((q) => q.subject.termType === 'NamedNode').sort(byProp).map((q) => [lit('incoming'), q.predicate, q.subject]),
+  ];
+  $('resTitle').textContent = shorten(iri);
+  $('resBody').innerHTML = '';
+  $('resBody').append(table(['direction', 'property', 'value'], rows));
+  $('resource').style.display = 'block';
+  $('resource').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
