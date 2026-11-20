@@ -105,7 +105,7 @@ export const CHAPTER = {
       task: `<p><b>Devise</b> a query, using the prefixes in the editor, for all curries (<code>dbo:type dbr:Curry</code>) whose raw country <code>dbp:country</code> is the literal <code>"Thailand"@en</code>.</p>`,
       hint: 'Two triple patterns that share ?s, each ending with a period. Write the literal exactly as "Thailand"@en.',
       returns: ['s'], check: ['s'],
-      starter: Q.prefixed,
+      starter: DBP + 'select ?s\nWHERE {\n  \n}',
       solution: Q.thaiLiteral,
       explain: 'With prefixes, dbr:Curry stands for &lt;http://dbpedia.org/resource/Curry&gt;. The object "Thailand"@en is a literal, not a link. Try dbr:Thailand instead: you get a different set of curries.',
       refs: ['sparql11'],
