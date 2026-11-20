@@ -39,13 +39,30 @@ export async function unlockWithKey(rawB64, base = 'data/') {
   return store;
 }
 
+// Comunica asks endpoints with a long Accept header, which makes every request need a CORS
+// preflight. DBpedia answers preflights inconsistently across its servers, so requests failed at
+// random. Sending only CORS-safelisted headers (a short Accept, form-encoded POST bodies) avoids the
+// preflight altogether.
+function simpleFetch(input, init = {}) {
+  const req = input instanceof Request ? input : null;
+  const url = req ? req.url : String(input);
+  const given = new Headers(init.headers || req?.headers || {});
+  const accept = given.get('accept') || '';
+  const headers = new Headers();
+  headers.set('accept', /sparql-results\+json/.test(accept) ? 'application/sparql-results+json'
+    : /n-triples|turtle/.test(accept) ? 'application/n-triples, text/turtle' : accept.slice(0, 120));
+  const ct = given.get('content-type');
+  if (ct) headers.set('content-type', ct);
+  return fetch(url, { method: init.method || req?.method || 'GET', headers, body: init.body, signal: init.signal || req?.signal });
+}
+
 // Runs any SPARQL query on an in-memory store or on a remote endpoint URL (string).
 // Returns {type:'bindings', vars, rows} | {type:'boolean', value} | {type:'quads', quads}
 export async function runQuery(source, query) {
   engine ||= new globalThis.Comunica.QueryEngine();
   const remote = typeof source === 'string';
   const result = await engine.query(query, remote
-    ? { sources: [{ type: 'sparql', value: source }], httpTimeout: 90000 }
+    ? { sources: [{ type: 'sparql', value: source }], httpTimeout: 90000, fetch: simpleFetch }
     : { sources: [source] });
   if (result.resultType === 'bindings') {
     const { variables } = await result.metadata();
