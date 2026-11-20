@@ -175,10 +175,10 @@
   <div class="view" id="pizzaView">
   <div class="about">
     <details>
-      <summary>Chapter 2 · The pizza ontology: about this chapter</summary>
-      <p>This tool belongs to the <em>Reasoning with Health Data</em> practical of MAM04,
-        Data Driven Decision Making and Evaluation in Medicine, in the Master Medical Informatics
-        (University of Amsterdam / Amsterdam UMC).</p>
+      <summary>Chapter 2 · The pizza ontology (week 2 · Reasoning with Health Data projects): about this chapter</summary>
+      <p>This chapter is done in week 2 of MAM04, Data Driven Decision Making and Evaluation in Medicine
+        (Master Medical Informatics, University of Amsterdam / Amsterdam UMC), by the students working on
+        <em>Reasoning with Health Data</em> projects.</p>
       <p>The data is the pizza ontology from the Protégé part of the practical. It has classes
         (e.g. <code>pizza:Margherita</code>), properties (e.g. <code>pizza:hasTopping</code>) and individuals
         (the countries). The class hierarchy that a reasoner infers is already included, which is why
@@ -505,20 +505,20 @@ function renderHome() {
   $('homeView').innerHTML = `<div class="page prose">
     <p class="kicker">Master Medical Informatics · MAM04 · Practical 2</p>
     <h2>Reasoning with Health Data: SPARQL</h2>
-    <p>Data Driven Decision Making and Evaluation in Medicine. In the first practical you modelled knowledge as an
-      ontology in Protégé. In this practical you <b>query</b> knowledge graphs with SPARQL, the standard query
-      language for linked data, and see what clinical questions such data can and cannot answer.</p>
+    <p>Data Driven Decision Making and Evaluation in Medicine. This is the second practical: you <b>query</b>
+      knowledge graphs with SPARQL, the standard query language for knowledge graphs, and see what clinical
+      questions such data can and cannot answer.</p>
     <div class="cards">
-      <a class="card" href="#/ch1"><p class="kicker">Chapter 1</p><h3>Introduction to SPARQL</h3>
-        <p>Triple patterns, variables, prefixes, literals and GROUP BY, with live queries on DBpedia and Wikidata about curries and food allergies. ${n} / ${CHAPTER.tasks.length} tasks solved.</p></a>
-      <a class="card" href="#/pizza"><p class="kicker">Chapter 2</p><h3>The pizza ontology</h3>
-        <p>Query the pizza ontology from the Protégé practical: classes, restrictions and the hierarchy a reasoner infers.</p></a>
+      <a class="card" href="#/ch1"><p class="kicker">Chapter 1 · Week 1 · All students</p><h3>Introduction to SPARQL</h3>
+        <p>Triple patterns, variables, prefixes, literals and GROUP BY, with live queries on DBpedia and Wikidata about curries and food allergies. Done in week 1 of MAM04 by all the students. ${n} / ${CHAPTER.tasks.length} tasks solved.</p></a>
+      <a class="card" href="#/pizza"><p class="kicker">Chapter 2 · Week 2 · Reasoning with Health Data projects</p><h3>The pizza ontology</h3>
+        <p>Query the pizza ontology you explored in WebProtégé in week 2 of MAM04: classes, restrictions and the hierarchy a reasoner infers. For students working on Reasoning with Health Data projects.</p></a>
     </div></div>`;
 }
 
 function renderChapter() {
   $('chapterView').innerHTML = `<div class="page prose">
-    <p class="kicker">Chapter ${CHAPTER.number}</p>
+    <p class="kicker">Chapter ${CHAPTER.number} · Week 1 · All students</p>
     <h2>${esc(CHAPTER.title)}</h2>
     ${CHAPTER.intro}
     <ol class="tasklist">${CHAPTER.tasks.map((t) => `<li><a href="#/ch1/${t.id}">
