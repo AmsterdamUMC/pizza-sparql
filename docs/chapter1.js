@@ -96,7 +96,7 @@ export const CHAPTER = {
         ${pre(Q.prefixed)}
         <p>You will see that this query shows exactly the same results as the previous one.</p>
         <p>Now lets try to get the name of the country as text. Remember, these are literals, i.e., they don’t point to other resources. Modify the query to find all curries with the object literal <code>"Thailand"@en</code>.</p>
-        <p><b>Answer Question set 3</b> (Questions 6 – 7 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
+        <p><b>Answer Question set 3</b> (Questions 7 – 8 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
       noSubmit: true,
       story: `<p>Long IRIs are tiring, so we define shorthands with <code>PREFIX</code>. A prefix covers everything up to the last <code>#</code> or <code>/</code>. Its name, ending in a colon, can be anything, but usually it's a recognisable abbreviation.</p>`,
       lesson: `<p>DBpedia uses two namespaces for predicates. <code>dbo:</code> (<code>http://dbpedia.org/ontology/</code>) holds curated ontology properties. <code>dbp:</code> (<code>http://dbpedia.org/property/</code>) holds raw properties copied straight from Wikipedia infoboxes. Raw properties often give text where you'd expect a link.</p>
@@ -114,10 +114,10 @@ export const CHAPTER = {
       body: `<p>Now let’s look at a possible application of the curry queries. Lets find curries with possible allergens. Here we will use Wikidata, it is another crowd-sourced knowledge graph. Its items have numeric identifiers and the label service adds English names as <code>?…Label</code>.</p>
         <p>In the preset query, <code>wd:Q164606</code> is curry, <code>wd:Q769815</code> is food allergy. <code>wdt:P279</code> is “subclass of”, <code>wdt:P186</code> “made from material” (ingredient) and <code>wdt:P828</code> “has cause”. The <code>*</code> in <code>wdt:P279*</code> follows subclass links zero or more times. This query connects the dish to the disease through the ingredient: it lists which curries contain an ingredient that causes a food allergy. Run it first.</p>
         <p>For an allergist, the question turns around: for each allergy, how many curries are risky? <code>GROUP BY</code> collects rows with the same values, and an aggregate such as <code>(COUNT(DISTINCT ?curry) AS ?n)</code> computes one number per group. Every selected variable that is not an aggregate must be in the <code>GROUP BY</code>.</p>
-        <p><b>Answer Question set 4</b> (Question 10 to 11 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>
+        <p><b>Answer Question set 4</b> (Question 9 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>
         <h3>Optional</h3>
         <p>Chicken is a common curry ingredient and Wikidata has a “poultry allergy”, yet it is missing from your results. Look up “chicken as food” on Wikidata: why does your query miss the link?</p>
-        <p><b>Answer Question set 5</b> (Question 10 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
+        <p><b>Answer Question set 5</b> (Questions 10 to 11 on <a href="https://canvas.uva.nl/courses/59376/quizzes/128232?module_item_id=2826720" target="_blank" rel="noopener">Canvas</a>).</p>`,
       noSubmit: true,
       after: `<p>This practical has given you a short introduction to SPARQL, you can explore these topics more at the <a href="https://koetai.github.io/scopoli-mam04/#/" target="_blank" rel="noopener">Scopoli website for MAM04</a> which has more examples from DBpedia and Wikidata.</p>`,
       story: `<p>Wikidata is another crowd-sourced knowledge graph. Its items have numeric identifiers: <code>wd:Q164606</code> is curry, <code>wd:Q769815</code> is food allergy. <code>wdt:P279</code> is “subclass of”, <code>wdt:P186</code> “made from material” (ingredient) and <code>wdt:P828</code> “has cause”. The <code>*</code> in <code>wdt:P279*</code> follows subclass links zero or more times, and the label service adds English names as <code>?…Label</code>.</p>
